@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cat-gif-generator
+  namespace: cat-gif-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cat-gif-generator
+  template:
+    metadata:
+      labels:
+        app: cat-gif-generator
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: cat-gif-generator
+          image: ghcr.io/hammer-redhat/cat-gif-generator:latest
+          ports:
+            - containerPort: 5001
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
