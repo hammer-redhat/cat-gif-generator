@@ -5,7 +5,7 @@ Generates a key on first run and stores it in .secret.key.
 import os
 from cryptography.fernet import Fernet
 
-KEY_FILE = ".secret.key"
+KEY_FILE = "/tmp/.secret.key"
 
 
 def _load_or_create_key() -> bytes:
@@ -30,7 +30,7 @@ def decrypt(token: bytes) -> str:
 
 def get_session_token() -> str:
     """Returns a stable encrypted session token, creating it on first call."""
-    token_file = ".session.token"
+    token_file = "/tmp/.session.token"
     if os.path.exists(token_file):
         with open(token_file, "rb") as f:
             return decrypt(f.read())
