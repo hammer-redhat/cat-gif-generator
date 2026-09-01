@@ -1,0 +1,9 @@
+app:
+  title: "Cat GIF Viewer"
+  gif_count: 9
+  debug: false
+
+storage:
+  s3_enabled: false
+  s3_bucket: ""
+  s3_prefix: "cat-gifs/"

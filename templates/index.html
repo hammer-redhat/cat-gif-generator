@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0f13;
+      color: #e8e8f0;
+      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 2rem 2rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e1e2e;
+    }
+
+    header h1 { font-size: 1.5rem; letter-spacing: -0.02em; }
+    header h1 span { color: #a78bfa; }
+
+    #refresh-btn {
+      background: #a78bfa;
+      color: #0f0f13;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    #refresh-btn:hover { opacity: 0.85; }
+    #refresh-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #status {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: #6b6b8a;
+      min-height: 2rem;
+    }
+
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      padding: 1rem 2rem 2rem;
+    }
+
+    .card {
+      background: #1a1a24;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #2a2a3e;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .card:hover { transform: translateY(-3px); border-color: #a78bfa55; }
+
+    .card img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+    }
+
+    .card-meta {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.75rem;
+      color: #6b6b8a;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .card-meta span { display: flex; align-items: center; gap: 0.25rem; }
+
+    .skeleton {
+      background: linear-gradient(90deg, #1a1a24 25%, #22223a 50%, #1a1a24 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 12px;
+      aspect-ratio: 4/3;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ title }} <span>🐱</span></h1>
+    <button id="refresh-btn">Shuffle</button>
+  </header>
+  <div id="status">Loading cats…</div>
+  <div id="grid"></div>
+
+  <script>
+    const grid = document.getElementById("grid");
+    const status = document.getElementById("status");
+    const btn = document.getElementById("refresh-btn");
+
+    async function loadGifs() {
+      btn.disabled = true;
+      status.textContent = "Fetching cats…";
+      grid.innerHTML = Array(9).fill('<div class="skeleton"></div>').join("");
+
+      try {
+        const res = await fetch("/api/gifs");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { gifs } = await res.json();
+
+        grid.innerHTML = "";
+        gifs.forEach(gif => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="${gif.url}" alt="cat gif" loading="lazy" />
+            <div class="card-meta">
+              <span>📐 ${gif.width}×${gif.height}</span>
+              <span>🎞 ${gif.frames} frames</span>
+              <span>💾 ${gif.size_kb} KB</span>
+            </div>`;
+          grid.appendChild(card);
+        });
+
+        status.textContent = `Showing ${gifs.length} cat${gifs.length !== 1 ? "s" : ""}`;
+      } catch (e) {
+        status.textContent = `Error: ${e.message}`;
+        grid.innerHTML = "";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    btn.addEventListener("click", loadGifs);
+    loadGifs();
+  </script>
+</body>
+</html>
