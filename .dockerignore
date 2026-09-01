@@ -1,0 +1,9 @@
+.secret.key
+.session.token
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.remember/
+docs/
+.DS_Store
