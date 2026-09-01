@@ -34,7 +34,7 @@ def get_session_token() -> str:
     if os.path.exists(token_file):
         with open(token_file, "rb") as f:
             return decrypt(f.read())
-    token = "cat-gif-session-v1"
+    token = os.urandom(16).hex()
     encrypted = encrypt(token)
     with open(token_file, "wb") as f:
         f.write(encrypted)
