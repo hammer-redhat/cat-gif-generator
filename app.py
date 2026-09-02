@@ -1,8 +1,7 @@
 import yaml
 from flask import Flask, render_template, jsonify
 from models import Config
-from imgur import fetch_random_urls, fetch_gif_bytes
-from images import extract_meta
+from imgur import fetch_random_urls
 from storage import upload_to_s3
 from secrets import get_session_token
 
@@ -24,22 +23,7 @@ def index():
 @app.route("/api/gifs")
 def api_gifs():
     urls = fetch_random_urls(config.app.gif_count)
-    results = []
-
-    for url in urls:
-        data = fetch_gif_bytes(url)
-        if data is None:
-            continue
-
-        meta = extract_meta(url, data)
-
-        if config.storage.s3_enabled:
-            key = config.storage.s3_prefix + url.split("/")[-1]
-            upload_to_s3(data, config.storage.s3_bucket, key)
-
-        results.append(meta.model_dump())
-
-    return jsonify({"gifs": results, "session": session_token})
+    return jsonify({"gifs": [{"url": u} for u in urls], "session": session_token})
 
 
 if __name__ == "__main__":

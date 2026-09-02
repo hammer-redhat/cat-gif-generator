@@ -70,16 +70,6 @@
       object-fit: cover;
     }
 
-    .card-meta {
-      padding: 0.6rem 0.8rem;
-      font-size: 0.75rem;
-      color: #6b6b8a;
-      display: flex;
-      gap: 1rem;
-    }
-
-    .card-meta span { display: flex; align-items: center; gap: 0.25rem; }
-
     .skeleton {
       background: linear-gradient(90deg, #1a1a24 25%, #22223a 50%, #1a1a24 75%);
       background-size: 200% 100%;
@@ -117,13 +107,7 @@
         gifs.forEach(gif => {
           const card = document.createElement("div");
           card.className = "card";
-          card.innerHTML = `
-            <img src="${gif.url}" alt="cat gif" loading="lazy" />
-            <div class="card-meta">
-              <span>📐 ${gif.width}×${gif.height}</span>
-              <span>🎞 ${gif.frames} frames</span>
-              <span>💾 ${gif.size_kb} KB</span>
-            </div>`;
+          card.innerHTML = `<img src="${gif.url}" alt="cat gif" loading="lazy" />`;
           grid.appendChild(card);
         });
 
