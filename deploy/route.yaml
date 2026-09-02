@@ -8,7 +8,7 @@ spec:
     kind: Service
     name: cat-gif-generator
   port:
-    targetPort: 80
+    targetPort: http
   tls:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
