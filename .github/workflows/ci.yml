@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write
 
 jobs:
   build:
@@ -45,3 +46,21 @@ jobs:
             NEXUS_USER=${{ secrets.NEXUS_USER }}
             NEXUS_PASS=${{ secrets.NEXUS_PASS }}
             NEXUS_PYPI_URL=${{ vars.NEXUS_PYPI_URL }}
+          load: ${{ github.event_name == 'pull_request' }}
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: ghcr.io/hammer-redhat/cat-gif-generator:${{ steps.sha.outputs.short }}
+          format: cyclonedx-json
+          output-file: sbom.cyclonedx.json
+
+      - name: Upload SBOM to Dependency-Track
+        uses: DependencyTrack/gh-upload-sbom@v3
+        with:
+          serverhostname: ${{ vars.DTRACK_API_URL }}
+          apikey: ${{ secrets.DTRACK_API_KEY }}
+          projectname: cat-gif-generator
+          projectversion: ${{ steps.sha.outputs.short }}
+          autocreate: true
+          bomfilename: sbom.cyclonedx.json
