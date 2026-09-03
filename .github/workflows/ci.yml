@@ -41,3 +41,7 @@ jobs:
           tags: |
             ghcr.io/hammer-redhat/cat-gif-generator:latest
             ghcr.io/hammer-redhat/cat-gif-generator:${{ steps.sha.outputs.short }}
+          build-args: |
+            NEXUS_USER=${{ secrets.NEXUS_USER }}
+            NEXUS_PASS=${{ secrets.NEXUS_PASS }}
+            NEXUS_PYPI_URL=${{ vars.NEXUS_PYPI_URL }}

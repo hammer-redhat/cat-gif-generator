@@ -2,6 +2,7 @@ FROM registry.access.redhat.com/ubi9/python-312
 
 ARG NEXUS_USER
 ARG NEXUS_PASS
+ARG NEXUS_PYPI_URL
 
 ENV PIP_DEFAULT_TIMEOUT=120
 
@@ -13,8 +14,8 @@ USER 1001
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir \
-    --index-url "https://${NEXUS_USER}:${NEXUS_PASS}@nexus-nexus.apps.hammer2.na-launch.com/repository/lightwell-python-libraries/simple/" \
-    --trusted-host nexus-nexus.apps.hammer2.na-launch.com \
+    --index-url "https://${NEXUS_USER}:${NEXUS_PASS}@${NEXUS_PYPI_URL}/simple/" \
+    --trusted-host "$(echo ${NEXUS_PYPI_URL} | cut -d'/' -f1)" \
     --timeout 120 \
     -r requirements.txt
 
