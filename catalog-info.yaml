@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cat-gif-generator
+  description: |
+    A Flask web application that fetches and displays random cat GIFs using the Imgur API,
+    with optional S3 storage for caching.
+  links:
+    - title: GitHub Repository
+      url: https://github.com/hammer-redhat/cat-gif-generator
+  annotations:
+    github.com/project-slug: hammer-redhat/cat-gif-generator
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: service
+  owner: user:chrhamme
+  lifecycle: experimental
