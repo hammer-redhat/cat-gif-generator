@@ -13,6 +13,14 @@ RUN dnf install -y rust cargo openssl-devel python3-devel gcc && dnf clean all
 USER 1001
 
 COPY requirements.txt .
+COPY requirements-cryptography.txt .
+RUN pip install --no-cache-dir \
+    --index-url "https://pypi.org/simple" \
+    --require-hashes \
+    --no-deps \
+    --timeout 600 \
+    -r requirements-cryptography.txt
+
 RUN pip install --no-cache-dir \
     --index-url "https://${NEXUS_USER}:${NEXUS_PASS}@${NEXUS_PYPI_URL}/simple/" \
     --trusted-host "$(echo ${NEXUS_PYPI_URL} | cut -d'/' -f1)" \
