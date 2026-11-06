@@ -1,9 +1,5 @@
 FROM registry.access.redhat.com/ubi9/python-312
 
-ARG NEXUS_USER
-ARG NEXUS_PASS
-ARG NEXUS_PYPI_URL
-
 ENV PIP_DEFAULT_TIMEOUT=120
 
 WORKDIR /app
@@ -13,9 +9,16 @@ RUN dnf install -y rust cargo openssl-devel python3-devel gcc && dnf clean all
 USER 1001
 
 COPY requirements.txt .
+COPY requirements-cryptography.txt .
 RUN pip install --no-cache-dir \
-    --index-url "https://${NEXUS_USER}:${NEXUS_PASS}@${NEXUS_PYPI_URL}/simple/" \
-    --trusted-host "$(echo ${NEXUS_PYPI_URL} | cut -d'/' -f1)" \
+    --index-url "https://pypi.org/simple" \
+    --require-hashes \
+    --no-deps \
+    --timeout 600 \
+    -r requirements-cryptography.txt
+
+RUN pip install --no-cache-dir \
+    --index-url "https://pypi.org/simple" \
     --timeout 600 \
     -r requirements.txt
 
