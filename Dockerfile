@@ -16,7 +16,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir \
     --index-url "https://${NEXUS_USER}:${NEXUS_PASS}@${NEXUS_PYPI_URL}/simple/" \
     --trusted-host "$(echo ${NEXUS_PYPI_URL} | cut -d'/' -f1)" \
-    --timeout 120 \
+    --timeout 600 \
     -r requirements.txt
 
 COPY . .
